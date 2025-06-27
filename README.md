@@ -15,14 +15,14 @@ pip install delay_sys
 
 ### Using uv (recommended for development)
 ```bash
-git clone https://github.com/your-username/delay_sys.git
+git clone https://github.com/jamestjsp/delay_sys.git
 cd delay_sys
 uv sync
 ```
 
 For development installation with pip:
 ```bash
-git clone https://github.com/your-username/delay_sys.git
+git clone https://github.com/jamestjsp/delay_sys.git
 cd delay_sys
 pip install -e .
 ```
@@ -125,7 +125,7 @@ Gd_tustin = delay_sys.system(G, sample_time=0.1, method='tustin')
 ### Using uv (recommended)
 ```bash
 # Clone and setup
-git clone https://github.com/your-username/delay_sys.git
+git clone https://github.com/jamestjsp/delay_sys.git
 cd delay_sys
 
 # Install dependencies and run
