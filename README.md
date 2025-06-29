@@ -29,7 +29,7 @@ pip install -e .
 
 ## Command-line Interface
 
-The package includes a demonstration command that shows step response comparison:
+The package includes an educational demonstration showing the impact of time delays on feedback control systems:
 
 ```bash
 # Run the demonstration
@@ -37,10 +37,20 @@ uv run delay_sys
 ```
 
 This will:
-- Create a first-order continuous system G(s) = 1/(5s + 1)
-- Discretize it with sampling time h = 0.5 minutes
-- Add a deadtime of 2.0 minutes
-- Display both systems and plot their step and frequency responses
+- Test multiple delay scenarios (0s, 0.2s, 0.5s, 1.0s) with a first-order plant
+- Show how system order increases with delay: Order = Original + (Delay/Sampling_time)
+- Demonstrate stability challenges as delays increase
+- Plot comprehensive analysis including:
+  - Step responses for different delays
+  - System order vs delay time
+  - Maximum pole magnitude vs delay
+  - Relationship between sampling time and delay complexity
+- Provide practical guidance for controlling delayed systems
+
+**Key Learning Points:**
+- Large delays create very high-order discrete systems
+- Stability becomes more challenging with many delay poles
+- Proper sampling time selection is crucial for delayed systems
 
 ## Quick Start
 
@@ -246,3 +256,35 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Delay Considerations
+
+When working with systems that have significant delays:
+
+### Sampling Time Selection
+```python
+# For a system with 1s delay:
+# Too fine sampling (1ms) → 1000 delay poles → Very high order
+# Better sampling (50ms) → 20 delay poles → Manageable
+
+delay = 1.0  # seconds
+dt_fine = 0.001    # 1000 poles!
+dt_good = 0.05     # 20 poles - much better
+```
+
+### Managing Large Delays
+```python
+from delay_sys.delayed_tf import create_fopdt
+
+# Example: Plant with significant delay
+plant = create_fopdt(gain=1.0, time_constant=2.0, dt=0.1, deadtime=1.5)
+
+# Check system complexity
+delay_samples = int(1.5 / 0.1)  # 15 additional poles
+print(f"System has {delay_samples} delay poles")
+
+# For very large delays, consider:
+# - Smith Predictor control
+# - Model Predictive Control (MPC)  
+# - Feedforward compensation
+```
