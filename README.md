@@ -168,6 +168,31 @@ ct.bode(Gd, w)
 plt.show()
 ```
 
+### PID Control with Delayed Systems
+```python
+import control as ct
+from delay_sys.delayed_tf import create_fopdt
+
+# Create delayed plant
+plant = create_fopdt(gain=2.0, time_constant=1.5, dt=0.1, deadtime=0.3)
+
+# Create PID controller (discrete form)
+# PID: Kp + Ki*dt/(z-1) + Kd*(z-1)/z
+Kp, Ki, Kd = 1.0, 0.2, 0.05
+pid_num = [Kp + Ki*0.1 + Kd, -Kp + Ki*0.1 - 2*Kd, Kd]
+pid_den = [1, -1, 0]
+pid = ct.tf(pid_num, pid_den, dt=0.1)
+
+# Create closed-loop system
+open_loop = pid * plant
+closed_loop = ct.feedback(open_loop, 1)
+
+# Analyze performance
+t, y = ct.step_response(closed_loop)
+gm, pm, _, _ = ct.margin(open_loop)
+print(f"Gain margin: {gm:.2f}, Phase margin: {pm:.1f}°")
+```
+
 ## Features
 
 - **Native deadtime support**: `DelayTransferFunction` class with explicit deadtime handling
